@@ -32,7 +32,15 @@ npm run dev
 - Dataset: Custom dataset (20k images)
 
 ## 📸 Screenshots
-(Add UI images here)
+
+### Upload Page
+![Upload](screenshots/upload-page.png)
+
+### Result Page
+![Result](screenshots/result-page.png)
+
+### Prediction
+![Prediction](screenshots/prediction.png)
 
 ## 🔗 Future Improvements
 - Deploy online
