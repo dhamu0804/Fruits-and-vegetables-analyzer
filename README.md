@@ -78,6 +78,10 @@ npm run dev
 
 ![Prediction](screenshots/prediction.png)
 
+### 🔹 Prediction Output
+
+![Prediction](screenshots/prediction1.png)
+
 ---
 
 ## 🧪 Model Details
