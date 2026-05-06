@@ -15,6 +15,10 @@ function ScoreCard({ finalResult, score }) {
   if (!finalResult) return null;
 
   const meta = statusMeta(finalResult.status);
+  const isSpoiled = meta.cls === "spoiled";
+  const eatingRisk =
+    finalResult.eating_risk ||
+    "May cause food poisoning symptoms such as nausea, vomiting, or diarrhea.";
   const confidence = Number(finalResult.confidence || 0).toFixed(2);
   const avgScore = Number(score || 0).toFixed(2);
 
@@ -52,20 +56,29 @@ function ScoreCard({ finalResult, score }) {
         </div>
         <div className="detail-row">
           <span className="detail-key">Shelf Life</span>
-          <strong className="detail-value">{finalResult.shelf_life}</strong>
+          <strong className="detail-value">{isSpoiled ? "0 days" : finalResult.shelf_life}</strong>
         </div>
-        <div className="detail-row">
-          <span className="detail-key">Storage</span>
-          <strong className="detail-value">{finalResult.storage_tip}</strong>
-        </div>
-        <div className="detail-row">
-          <span className="detail-key">Nutrition</span>
-          <strong className="detail-value">{finalResult.nutrition}</strong>
-        </div>
-        <div className="detail-row detail-row--full">
-          <span className="detail-key">Health Tip</span>
-          <strong className="detail-value">{finalResult.health_tip}</strong>
-        </div>
+        {isSpoiled ? (
+          <div className="detail-row detail-row--full">
+            <span className="detail-key">Effects If Eaten</span>
+            <strong className="detail-value">{eatingRisk}</strong>
+          </div>
+        ) : (
+          <>
+            <div className="detail-row">
+              <span className="detail-key">Storage</span>
+              <strong className="detail-value">{finalResult.storage_tip}</strong>
+            </div>
+            <div className="detail-row">
+              <span className="detail-key">Nutrition</span>
+              <strong className="detail-value">{finalResult.nutrition}</strong>
+            </div>
+            <div className="detail-row detail-row--full">
+              <span className="detail-key">Health Tip</span>
+              <strong className="detail-value">{finalResult.health_tip}</strong>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

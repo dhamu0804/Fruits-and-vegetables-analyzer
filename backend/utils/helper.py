@@ -64,6 +64,19 @@ KNOWLEDGE_BASE = {
     },
 }
 
+SPOILED_EATING_RISKS = {
+    "Apple": "May cause stomach upset and foodborne illness due to yeast and mold growth.",
+    "Banana": "Can trigger nausea, bloating, and diarrhea from microbial spoilage.",
+    "Bellpepper": "May contain harmful bacteria and molds that can cause food poisoning.",
+    "Cucumber": "Can cause digestive discomfort and possible foodborne infection.",
+    "Grape": "May lead to stomach pain, vomiting, or diarrhea if contaminated by molds.",
+    "Okra": "Can cause gastrointestinal irritation when spoiled microbes are present.",
+    "Orange": "Spoiled citrus may irritate the stomach and cause nausea or vomiting.",
+    "Potato": "Rotten potato can be unsafe; consuming it may cause severe stomach upset.",
+    "Strawberry": "Moldy berries may trigger stomach issues and allergic reactions in some people.",
+    "Tomato": "Spoiled tomatoes may cause food poisoning symptoms like nausea and diarrhea.",
+}
+
 
 def normalize_label(label: str) -> str:
     clean = label.replace("Freah", "Fresh").replace("_", " ").strip()
@@ -82,6 +95,8 @@ def split_label(label: str):
 
 def enrich_prediction(label: str, confidence: float):
     status, item = split_label(label)
+    is_spoiled = status.lower() in {"rotten", "spoiled", "bad"}
+
     info = KNOWLEDGE_BASE.get(
         item,
         {
@@ -91,15 +106,27 @@ def enrich_prediction(label: str, confidence: float):
             "health_tip": "Not available",
         },
     )
+
+    if is_spoiled:
+        shelf_life = "0 days"
+        eating_risk = SPOILED_EATING_RISKS.get(
+            item,
+            "May cause food poisoning symptoms such as nausea, vomiting, or diarrhea.",
+        )
+    else:
+        shelf_life = info["shelf_life"]
+        eating_risk = ""
+
     return {
         "label": normalize_label(label),
         "status": status,
         "item": item,
         "confidence": round(confidence, 2),
-        "shelf_life": info["shelf_life"],
+        "shelf_life": shelf_life,
         "nutrition": info["nutrition"],
         "storage_tip": info["storage_tip"],
         "health_tip": info["health_tip"],
+        "eating_risk": eating_risk,
     }
 
 

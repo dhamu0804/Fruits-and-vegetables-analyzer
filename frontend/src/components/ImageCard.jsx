@@ -9,6 +9,8 @@ function statusMeta(status = "") {
 
 function ImageCard({ result }) {
   const meta = statusMeta(result.status);
+  const isSpoiled = meta.cls === "spoiled";
+  const eatingRisk = result.eating_risk || "May cause food poisoning symptoms such as nausea, vomiting, or diarrhea.";
 
   return (
     <article className="result-card">
@@ -36,20 +38,29 @@ function ImageCard({ result }) {
       <ul className="rc-info">
         <li>
           <span className="rc-key">🕐 Shelf Life</span>
-          <span className="rc-val">{result.shelf_life}</span>
+          <span className="rc-val">{isSpoiled ? "0 days" : result.shelf_life}</span>
         </li>
-        <li>
-          <span className="rc-key">🥗 Nutrition</span>
-          <span className="rc-val">{result.nutrition}</span>
-        </li>
-        <li>
-          <span className="rc-key">💡 Tip</span>
-          <span className="rc-val">{result.health_tip}</span>
-        </li>
-        <li>
-          <span className="rc-key">📦 Storage</span>
-          <span className="rc-val">{result.storage_tip}</span>
-        </li>
+        {isSpoiled ? (
+          <li>
+            <span className="rc-key">⚠ Effects If Eaten</span>
+            <span className="rc-val">{eatingRisk}</span>
+          </li>
+        ) : (
+          <>
+            <li>
+              <span className="rc-key">🥗 Nutrition</span>
+              <span className="rc-val">{result.nutrition}</span>
+            </li>
+            <li>
+              <span className="rc-key">💡 Tip</span>
+              <span className="rc-val">{result.health_tip}</span>
+            </li>
+            <li>
+              <span className="rc-key">📦 Storage</span>
+              <span className="rc-val">{result.storage_tip}</span>
+            </li>
+          </>
+        )}
         {result.position && (
           <li>
             <span className="rc-key">📷 View</span>
