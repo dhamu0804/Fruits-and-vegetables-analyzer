@@ -1,5 +1,7 @@
 from io import BytesIO
 
+import cv2
+import numpy as np
 from PIL import Image
 from torchvision import transforms
 
@@ -15,6 +17,17 @@ IMAGE_TRANSFORM = transforms.Compose(
 
 
 def preprocess_image(image_bytes: bytes):
-    image = Image.open(BytesIO(image_bytes)).convert("RGB")
+    try:
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+    except Exception:
+        image_array = np.frombuffer(image_bytes, dtype=np.uint8)
+        image_bgr = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+
+        if image_bgr is None:
+            raise
+
+        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image_rgb)
+
     tensor = IMAGE_TRANSFORM(image).unsqueeze(0)
     return image, tensor

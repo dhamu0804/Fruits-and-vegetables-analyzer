@@ -15,3 +15,9 @@ Thumbs.db
 
 # Dataset
 dataset/
+
+# Database
+backend/analysis.db
+
+# Environment variables
+.env
